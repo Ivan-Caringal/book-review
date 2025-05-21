@@ -19,7 +19,10 @@
     </div>
   </div>
 
-  
+  <div class="mb-4">
+    <a href="{{ route('books.reviews.create', $book) }}" class="reset-link">
+      Add a review!</a>
+  </div>
 
 
   <div>
