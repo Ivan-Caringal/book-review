@@ -1,7 +1,12 @@
 @extends('layouts.app') 
 
 @section('content')
-    <h1 class="mb-10 text-2xl">Books</h1>
+    <h1 class="mb-10 text-2xl">Books Review Hub</h1>
+
+    <div class="mb-4">
+    <a href="{{ route('books.create') }}" class="reset-link">
+      Add a Book!</a>
+     </div>
 
 
     <form method="GET" action="{{ route('books.index') }}" class="mb-4 flex items-center space-x-2">

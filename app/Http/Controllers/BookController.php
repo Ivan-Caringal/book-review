@@ -30,10 +30,11 @@ class BookController extends Controller
             'highest_rated_last_6months' => $books->highestRatedLast6Months(),
             default => $books->latest()->withAvgRating()->withReviewsCount()
         };
-        
+        // eror in here my cache key is filter and title and i cannot put the filter and title in the booted() forger so my soloution is
+        //to put a 60 sec cache reset only intead of 1hr
         $cacheKey = 'books:' . $filter . ':' . $title;
         
-        $books = cache()->remember($cacheKey, 3600, fn() => $books->get());
+        $books = cache()->remember($cacheKey, 60, fn() => $books->get());
     
         return view('books.index', ['books' => $books ]);
     }
@@ -43,7 +44,7 @@ class BookController extends Controller
      */
     public function create()
     {
-        //
+        return view('books.create');
     }
 
     /**
@@ -51,7 +52,12 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->validate([
+            'title' => 'required|min:10',
+            'author' => 'required|string|min:5|max:255'
+        ]);
+        Book::create($data);
+        return redirect()->route('books.index');
     }
 
     /**

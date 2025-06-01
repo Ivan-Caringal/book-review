@@ -10,6 +10,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder; // adding this is for saf
 class Book extends Model
 {
     use HasFactory;
+    protected $fillable = ['title', 'author'];
 
     
     public function reviews()
@@ -93,11 +94,26 @@ class Book extends Model
             ->minReviews(5);
     }
 
-      protected static function booted()
-    {
-        static::updated(fn(Book $book) => cache()->forget('book:' . $book->id));
-        static::deleted(fn(Book $book) => cache()->forget('book:' . $book->id));
-    }
+     protected static function booted()
+{
+    static::updated(function (Book $book) {
+        cache()->forget('book:' . $book->id);
+
+        // Forget all known filtered lists
+        
+        cache()->forget('books:'); // if you have a default no-filter key
+    });
+
+    static::created(function (Book $book) {
+        cache()->forget('book:' . $book->id);
+        cache()->forget('books:');
+    });
+
+    static::deleted(function (Book $book) {
+        cache()->forget('book:' . $book->id);
+        cache()->forget('books:');
+    });
+}
 
 
 }
